@@ -83,10 +83,10 @@ module.exports.script = async (octokit, repository) => {
   }
 
   // https://docs.github.com/rest/reference/repos#create-or-update-file-contents
-  await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', payload).then(
-    response => null,
+  const url = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', payload).then(
+    response => response.data.content.html_url,
     error => null
   )
 
-  octokit.log.info(`${repository.html_url} ${dependabotPath} ${sha ? 'updated' : 'added'}.`)
+  octokit.log.info(`${url} ${sha ? 'updated' : 'added'}.`)
 }
