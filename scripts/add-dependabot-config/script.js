@@ -1,11 +1,16 @@
 const fs = require('fs')
 const path = require('path')
 
-module.exports.script = async (octokit, repository) => {
-  if (repository.archived || repository.disabled || repository.fork) {
-    const msg = repository.archived ? 'archived' : repository.disabled ? 'disabled' : repository.fork ? 'a fork' : null
+const {skipRepoReason} = require('../helpers')
 
-    msg && octokit.log.info(`${repository.html_url} is ${msg}, ignoring.`)
+/**
+ * @param {import('@octokit/core').Octokit} octokit
+ * @param {import('@octokit/openapi-types').components["schemas"]["repository"]} repository
+ */
+module.exports.script = async (octokit, repository) => {
+  const skip = skipRepoReason(repository)
+  if (skip) {
+    octokit.log.info(`${repository.html_url} is ${skip}, ignoring.`)
     return
   }
 

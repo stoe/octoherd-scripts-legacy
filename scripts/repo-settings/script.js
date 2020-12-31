@@ -1,10 +1,13 @@
+const {skipRepoReason} = require('../helpers')
+
+/**
+ * @param {import('@octokit/core').Octokit} octokit
+ * @param {import('@octokit/openapi-types').components["schemas"]["repository"]} repository
+ */
 module.exports.script = async (octokit, repository) => {
-  if (repository.archived || repository.disabled || repository.fork) {
-    octokit.log.info(`${repository.html_url} ignored.`, {
-      archived: repository.archived,
-      disabled: repository.disabled,
-      fork: repository.fork
-    })
+  const skip = skipRepoReason(repository)
+  if (skip) {
+    octokit.log.info(`${repository.html_url} is ${skip}, ignoring.`)
     return
   }
 

@@ -1,3 +1,7 @@
+/**
+ * @param {import('@octokit/core').Octokit} octokit
+ * @param {import('@octokit/openapi-types').components["schemas"]["repository"]} repository
+ */
 module.exports.script = async (octokit, repository) => {
   const owner = repository.owner.login
   const repo = repository.name
