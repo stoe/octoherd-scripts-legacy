@@ -66,16 +66,13 @@ module.exports.script = async (octokit, repository) => {
     content
   }
 
-  const sha = await octokit
-    .request('GET /repos/{owner}/{repo}/contents/{path}', {
-      owner,
-      repo,
-      path: dependabotPath
-    })
-    .then(
-      response => response.data.sha,
-      error => null
-    )
+  const {
+    data: {sha}
+  } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+    owner,
+    repo,
+    path: dependabotPath
+  })
 
   if (sha) {
     payload.sha = sha
@@ -83,10 +80,11 @@ module.exports.script = async (octokit, repository) => {
   }
 
   // https://docs.github.com/rest/reference/repos#create-or-update-file-contents
-  const url = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', payload).then(
-    response => response.data.content.html_url,
-    error => null
-  )
+  const {
+    data: {
+      content: {html_url: url}
+    }
+  } = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', payload)
 
   octokit.log.info(`${url} ${sha ? 'updated' : 'added'}.`)
 }

@@ -15,15 +15,11 @@ module.exports.script = async (octokit, repository) => {
   const owner = repository.owner.login
   const repo = repository.name
 
-  const data = await octokit
+  const {data} = await octokit
     .request('GET /repos/{owner}/{repo}/labels', {
       owner,
       repo
     })
-    .then(
-      response => response.data,
-      error => null
-    )
 
   for (const label of data) {
     const {name} = label
