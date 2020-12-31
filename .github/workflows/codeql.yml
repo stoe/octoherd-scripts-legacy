@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '0 1 * * 1'
 
-name: codeql
+name: CodeQL
 
 jobs:
   codeql:
