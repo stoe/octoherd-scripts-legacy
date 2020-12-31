@@ -1,0 +1,27 @@
+[
+  {
+    "name": "bug :bug:",
+    "color": "bd2c00",
+    "description": "Something not working"
+  },
+  {
+    "name": "feature-request :construction:",
+    "color": "4078c0",
+    "description": "Want something new"
+  },
+  {
+    "name": "stale :robot:",
+    "color": "6e5494",
+    "description": "Attention needed (stalebot)"
+  },
+  {
+    "name": "backlog :robot:",
+    "color": "6e5494",
+    "description": "Never mark as \"stale\" (stalebot)"
+  },
+  {
+    "name": "dependency :robot:",
+    "color": "cc0033",
+    "description": "Security update (dependabot)"
+  }
+]
