@@ -53,7 +53,7 @@ module.exports.script = async (octokit, repository) => {
   }
   const content = fs.readFileSync(config).toString('base64')
 
-  let payload = {
+  const payload = {
     owner,
     repo,
     path: dependabotPath,
