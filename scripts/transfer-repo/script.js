@@ -3,6 +3,7 @@ module.exports.script = async (octokit, repository, options) => {
   const repo = repository.name
   const new_owner = options.newOwner
 
+  // https://docs.github.com/rest/reference/repos#transfer-a-repository
   await octokit
     .request('POST /repos/{owner}/{repo}/transfer', {
       owner,

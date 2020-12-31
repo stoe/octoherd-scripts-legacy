@@ -15,6 +15,7 @@ module.exports.script = async (octokit, repository) => {
   let commits = 0
 
   if (branch) {
+    // https://docs.github.com/rest/reference/repos#list-commits
     commits = await octokit
       .request('GET /repos/{owner}/{repo}/commits', {
         owner,
@@ -29,7 +30,7 @@ module.exports.script = async (octokit, repository) => {
       )
   }
 
-  // https://docs.github.com/en/rest/reference/repos#enable-vulnerability-alerts
+  // https://docs.github.com/rest/reference/repos#enable-vulnerability-alerts
   await octokit.request('PUT /repos/{owner}/{repo}/vulnerability-alerts', {
     owner,
     repo,
@@ -38,7 +39,7 @@ module.exports.script = async (octokit, repository) => {
     }
   })
 
-  // https://docs.github.com/en/rest/reference/repos#enable-automated-security-fixes
+  // https://docs.github.com/rest/reference/repos#enable-automated-security-fixes
   await octokit.request('PUT /repos/{owner}/{repo}/automated-security-fixes', {
     owner,
     repo,
@@ -47,7 +48,7 @@ module.exports.script = async (octokit, repository) => {
     }
   })
 
-  // https://docs.github.com/en/rest/reference/repos#update-a-repository
+  // https://docs.github.com/rest/reference/repos#update-a-repository
   await octokit.request('PATCH /repos/{owner}/{repo}', {
     owner,
     repo,
@@ -62,7 +63,7 @@ module.exports.script = async (octokit, repository) => {
   })
 
   if (branch && commits > 0) {
-    // https://docs.github.com/en/rest/reference/repos#update-branch-protection
+    // https://docs.github.com/rest/reference/repos#update-branch-protection
     await octokit.request('PUT /repos/{owner}/{repo}/branches/{branch}/protection', {
       owner,
       repo,
@@ -76,7 +77,7 @@ module.exports.script = async (octokit, repository) => {
       enforce_admins: null
     })
 
-    // https://docs.github.com/en/rest/reference/repos#create-commit-signature-protection
+    // https://docs.github.com/rest/reference/repos#create-commit-signature-protection
     await octokit.request('POST /repos/{owner}/{repo}/branches/{branch}/protection/required_signatures', {
       owner,
       repo,
