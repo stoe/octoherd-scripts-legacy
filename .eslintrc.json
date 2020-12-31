@@ -26,7 +26,8 @@
           "required_pull_request_reviews",
           "require_code_owner_reviews",
           "enforce_admins",
-          "new_owner"
+          "new_owner",
+          "per_page"
         ]
       }
     ],
