@@ -1,0 +1,42 @@
+{
+  "name": "@stoe/octoherd-scripts",
+  "version": "0.0.0-development",
+  "description": "",
+  "keywords": [
+    "octoherd",
+    "scripts"
+  ],
+  "author": {
+    "name": "Stefan Stölzle",
+    "email": "stefan@stoelzle.me",
+    "url": "https://github.com/stoe"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/stoe/octoherd-scripts#readme",
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/stoe/octoherd-scripts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stoe/octoherd-scripts/issues"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "engines": {
+    "node": ">=12",
+    "npm": ">=6"
+  },
+  "scripts": {
+    "pretest": "npx eslint-config-prettier .eslintrc.json",
+    "test": "eslint **/*.js "
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@github/prettier-config": "^0.0.4",
+    "eslint": "^7.16.0",
+    "eslint-config-prettier": "^7.1.0",
+    "eslint-plugin-github": "^4.1.1"
+  },
+  "prettier": "@github/prettier-config"
+}
