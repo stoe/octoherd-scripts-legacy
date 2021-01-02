@@ -13,25 +13,7 @@ module.exports.script = async (octokit, repository) => {
 
   const owner = repository.owner.login
   const repo = repository.name
-  const branch = repository.default_branch || null
 
-  let commits = 0
-
-  if (branch) {
-    // https://docs.github.com/rest/reference/repos#list-commits
-    commits = await octokit
-      .request('GET /repos/{owner}/{repo}/commits', {
-        owner,
-        repo,
-        sha: branch,
-        per_page: 10,
-        page: 1
-      })
-      .then(
-        response => response.data.length,
-        error => 0
-      )
-  }
 
   // https://docs.github.com/rest/reference/repos#enable-vulnerability-alerts
   await octokit.request('PUT /repos/{owner}/{repo}/vulnerability-alerts', {
@@ -65,7 +47,8 @@ module.exports.script = async (octokit, repository) => {
     delete_branch_on_merge: true
   })
 
-  if (branch && commits > 0) {
+  const branch = repository.default_branch || null
+  if (branch && !(await isRepoEmpty(octokit, repository))) {
     // https://docs.github.com/rest/reference/repos#update-branch-protection
     await octokit.request('PUT /repos/{owner}/{repo}/branches/{branch}/protection', {
       owner,
