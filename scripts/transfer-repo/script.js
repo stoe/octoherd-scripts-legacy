@@ -9,7 +9,12 @@ const {logger} = require('../helpers')
 module.exports.script = async (octokit, repository, options) => {
   const owner = repository.owner.login
   const repo = repository.name
-  const new_owner = options.newOwner
+  
+  const new_owner = options.newOwner || null
+
+  if (!new_owner) {
+    throw new Error(`--newOwner is required`)
+  }
 
   // https://docs.github.com/rest/reference/repos#transfer-a-repository
   await octokit
