@@ -8,6 +8,9 @@ module.exports.script = async (octokit, repository) => {
   const owner = repository.owner.login
   const repo = repository.name
 
+  // NOTE: disabled
+  return
+
   // https://docs.github.com/rest/reference/repos#delete-a-repository
   const status = await octokit
     .request('DELETE /repos/{owner}/{repo}', {
@@ -16,7 +19,7 @@ module.exports.script = async (octokit, repository) => {
     })
     .then(
       response => response.status,
-      error => null
+      error => error.status
     )
 
   if (status === 204) {
