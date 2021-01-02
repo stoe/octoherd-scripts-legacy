@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const {skipRepoReason} = require('../helpers')
+const {isRepoEmpty, logger, skipRepoReason} = require('../helpers')
 
 /**
  * @param {import('@octokit/core').Octokit} octokit
@@ -10,7 +10,7 @@ const {skipRepoReason} = require('../helpers')
 module.exports.script = async (octokit, repository) => {
   const skip = skipRepoReason(repository)
   if (skip) {
-    octokit.log.info(`${repository.html_url} is ${skip}, ignoring.`)
+    logger.debug(`${repository.html_url} is ${skip}, ignoring`)
     return
   }
 
@@ -39,7 +39,7 @@ module.exports.script = async (octokit, repository) => {
   }
 
   if (commits < 1) {
-    octokit.log.info(`${repository.html_url} is empty, ignoring.`)
+    logger.debug(`${repository.html_url} is empty, ignoring`)
     return
   }
 
@@ -86,5 +86,5 @@ module.exports.script = async (octokit, repository) => {
     }
   } = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', payload)
 
-  octokit.log.info(`${url} ${sha ? 'updated' : 'added'}.`)
+  url && logger.info(`${url} ${sha ? 'updated' : 'added'}`)
 }

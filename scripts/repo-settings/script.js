@@ -1,4 +1,4 @@
-const {skipRepoReason} = require('../helpers')
+const {isRepoEmpty, logger, skipRepoReason} = require('../helpers')
 
 /**
  * @param {import('@octokit/core').Octokit} octokit
@@ -7,7 +7,7 @@ const {skipRepoReason} = require('../helpers')
 module.exports.script = async (octokit, repository) => {
   const skip = skipRepoReason(repository)
   if (skip) {
-    octokit.log.info(`${repository.html_url} is ${skip}, ignoring.`)
+    logger.debug(`${repository.html_url} is ${skip}, ignoring`)
     return
   }
 
@@ -91,5 +91,5 @@ module.exports.script = async (octokit, repository) => {
     })
   }
 
-  octokit.log.info(`settings applied to ${repository.html_url}`)
+  logger.info(`${repository.html_url} settings applied`)
 }

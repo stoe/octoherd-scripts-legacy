@@ -1,4 +1,4 @@
-const {skipRepoReason} = require('../helpers')
+const {logger, skipRepoReason} = require('../helpers')
 
 /**
  * @param {import('@octokit/core').Octokit} octokit
@@ -7,7 +7,7 @@ const {skipRepoReason} = require('../helpers')
 module.exports.script = async (octokit, repository) => {
   const skip = skipRepoReason(repository)
   if (skip) {
-    octokit.log.info(`${repository.html_url} is ${skip}, ignoring.`)
+    logger.debug(`${repository.html_url} is ${skip}, ignoring`)
     return
   }
 
@@ -26,7 +26,10 @@ module.exports.script = async (octokit, repository) => {
       error => null
     )
 
-  if (!sha) return
+  if (!sha) {
+    logger.debug(`${repository.html_url} ${path} not found, ignoring`)
+    return
+  }
 
   await octokit.request('DELETE /repos/{owner}/{repo}/contents/{path}', {
     owner,
@@ -36,5 +39,5 @@ module.exports.script = async (octokit, repository) => {
     message: '🤖 Delete stalebot config'
   })
 
-  octokit.log.info(`${repository.html_url} ${path} deleted.`)
+  logger.info(`${repository.html_url} ${path} deleted`)
 }

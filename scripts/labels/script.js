@@ -1,5 +1,5 @@
 const SYNC_LABELS = require('./labels.json')
-const {skipRepoReason} = require('../helpers')
+const {logger, skipRepoReason} = require('../helpers')
 
 /**
  * @param {import('@octokit/core').Octokit} octokit
@@ -8,7 +8,7 @@ const {skipRepoReason} = require('../helpers')
 module.exports.script = async (octokit, repository) => {
   const skip = skipRepoReason(repository)
   if (skip) {
-    octokit.log.info(`${repository.html_url} is ${skip}, ignoring.`)
+    logger.debug(`${repository.html_url} is ${skip}, ignoring`)
     return
   }
 
@@ -67,5 +67,5 @@ module.exports.script = async (octokit, repository) => {
     }
   }
 
-  octokit.log.info(`${repository.html_url} labels updated.`)
+  logger.info(`${repository.html_url}/labels updated`)
 }

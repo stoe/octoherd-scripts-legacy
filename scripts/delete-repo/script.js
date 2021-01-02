@@ -1,3 +1,5 @@
+const {logger} = require('../helpers')
+
 /**
  * @param {import('@octokit/core').Octokit} octokit
  * @param {import('@octokit/openapi-types').components["schemas"]["repository"]} repository
@@ -18,8 +20,8 @@ module.exports.script = async (octokit, repository) => {
     )
 
   if (status === 204) {
-    octokit.log.info(`${owner}/${repo} deleted`)
+    logger.info(`${owner}/${repo} deleted`)
   } else {
-    octokit.log.error(`${owner}/${repo} not deleted`)
+    logger.error(`${owner}/${repo} not deleted`)
   }
 }

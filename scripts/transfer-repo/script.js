@@ -1,3 +1,5 @@
+const {logger} = require('../helpers')
+
 /**
  * @param {import('@octokit/core').Octokit} octokit
  * @param {import('@octokit/openapi-types').components["schemas"]["repository"]} repository
@@ -18,10 +20,10 @@ module.exports.script = async (octokit, repository, options) => {
     })
     .then(
       response => {
-        octokit.log.info(`${owner}/${repo} transfered to ${new_owner}/${repo}`)
+        logger.info(`${owner}/${repo} transfered to ${new_owner}/${repo}`)
       },
       error => {
-        octokit.log.error(`[ERROR] ${error.errors[0].message}`)
+        logger.error(error)
       }
     )
 }

@@ -31,7 +31,9 @@
     "pretest": "npx eslint-config-prettier .eslintrc.json",
     "test": "eslint **/*.js "
   },
-  "dependencies": {},
+  "dependencies": {
+    "winston": "^3.3.3"
+  },
   "devDependencies": {
     "@github/prettier-config": "^0.0.4",
     "@octokit/core": "^3.2.4",
