@@ -32,18 +32,16 @@
     "test": "eslint **/*.js "
   },
   "dependencies": {
+    "@octoherd/cli": "^2.0.1",
     "winston": "^3.3.3"
   },
   "devDependencies": {
     "@github/prettier-config": "^0.0.4",
     "@octokit/core": "^3.2.4",
     "@octokit/openapi-types": "^2.0.1",
-    "eslint": "^7.16.0",
+    "eslint": "^7.17.0",
     "eslint-config-prettier": "^7.1.0",
     "eslint-plugin-github": "^4.1.1"
-  },
-  "peerDependencies": {
-    "@octoherd/cli": "^2.0.1"
   },
   "prettier": "@github/prettier-config"
 }
