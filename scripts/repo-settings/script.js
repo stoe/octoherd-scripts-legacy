@@ -3,8 +3,10 @@ const {isRepoEmpty, logger, skipRepoReason} = require('../helpers')
 /**
  * @param {import('@octokit/core').Octokit} octokit
  * @param {import('@octokit/openapi-types').components["schemas"]["repository"]} repository
+ * @param {object} options
+ * @param {boolean} options.signature Require commit signature protection
  */
-module.exports.script = async (octokit, repository) => {
+module.exports.script = async (octokit, repository, options) => {
   const skip = skipRepoReason(repository)
   if (skip) {
     logger.debug(`${repository.html_url} is ${skip}, ignoring`)
@@ -14,6 +16,7 @@ module.exports.script = async (octokit, repository) => {
   const owner = repository.owner.login
   const repo = repository.name
 
+  const method = options.signature ? 'POST' : 'DELETE'
 
   // https://docs.github.com/rest/reference/repos#enable-vulnerability-alerts
   await octokit.request('PUT /repos/{owner}/{repo}/vulnerability-alerts', {
@@ -63,8 +66,18 @@ module.exports.script = async (octokit, repository) => {
       enforce_admins: null
     })
 
+    // https://docs.github.com/rest/reference/repos#delete-commit-signature-protection
     // https://docs.github.com/rest/reference/repos#create-commit-signature-protection
-    await octokit.request('POST /repos/{owner}/{repo}/branches/{branch}/protection/required_signatures', {
+    logger.log({
+      level: 'debug',
+      message: `${method === 'POST' ? 'create' : 'delete'} commit signature protection requirement`,
+      cmd: `${method} /repos/{owner}/{repo}/branches/{branch}/protection/required_signatures`,
+      docs: `https://docs.github.com/rest/reference/repos#${
+        method === 'POST' ? 'create' : 'delete'
+      }-commit-signature-protection`
+    })
+    await octokit.request(`/repos/{owner}/{repo}/branches/{branch}/protection/required_signatures`, {
+      method,
       owner,
       repo,
       branch,
