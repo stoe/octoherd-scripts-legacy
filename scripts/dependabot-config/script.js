@@ -16,29 +16,10 @@ module.exports.script = async (octokit, repository) => {
 
   const owner = repository.owner.login
   const repo = repository.name
-  const branch = repository.default_branch || null
   const language = repository.language ? repository.language.toLowerCase() : null
   const dependabotPath = '.github/dependabot.yml'
 
-  let commits = 0
-
-  if (branch) {
-    // https://docs.github.com/rest/reference/repos#list-commits
-    commits = await octokit
-      .request('GET /repos/{owner}/{repo}/commits', {
-        owner,
-        repo,
-        sha: branch,
-        per_page: 10,
-        page: 1
-      })
-      .then(
-        response => response.data.length,
-        error => 0
-      )
-  }
-
-  if (commits < 1) {
+  if (await isRepoEmpty(octokit, repository)) {
     logger.debug(`${repository.html_url} is empty, ignoring`)
     return
   }
@@ -63,16 +44,27 @@ module.exports.script = async (octokit, repository) => {
     repo,
     path: dependabotPath,
     message: '🤖 Add dependabot config',
-    content
+    content,
+    committer: {
+      name: '@stoe/octoherd-scripts',
+      email: 'octoherd@stoelzle.me'
+    },
+    author: {
+      name: 'Stefan Stölzle',
+      email: 'stefan@stoelzle.me'
+    }
   }
 
-  const {
-    data: {sha}
-  } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-    owner,
-    repo,
-    path: dependabotPath
-  })
+  const sha = await octokit
+    .request('GET /repos/{owner}/{repo}/contents/{path}', {
+      owner,
+      repo,
+      path: dependabotPath
+    })
+    .then(
+      response => response.data.sha,
+      error => null
+    )
 
   if (sha) {
     payload.sha = sha
@@ -80,11 +72,10 @@ module.exports.script = async (octokit, repository) => {
   }
 
   // https://docs.github.com/rest/reference/repos#create-or-update-file-contents
-  const {
-    data: {
-      content: {html_url: url}
-    }
-  } = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', payload)
+  const url = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', payload).then(
+    response => response.data.content.html_url,
+    error => null
+  )
 
   url && logger.info(`${url} ${sha ? 'updated' : 'added'}`)
 }
