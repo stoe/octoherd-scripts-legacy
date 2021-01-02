@@ -15,6 +15,7 @@ module.exports.script = async (octokit, repository) => {
   const repo = repository.name
   const path = '.github/stale.yml'
 
+  // https://docs.github.com/rest/reference/repos#get-repository-content
   const sha = await octokit
     .request('GET /repos/{owner}/{repo}/contents/{path}', {
       owner,
@@ -31,13 +32,19 @@ module.exports.script = async (octokit, repository) => {
     return
   }
 
-  await octokit.request('DELETE /repos/{owner}/{repo}/contents/{path}', {
-    owner,
-    repo,
-    path,
-    sha,
-    message: '🤖 Delete stalebot config'
-  })
+  // https://docs.github.com/rest/reference/repos#delete-a-file
+  await octokit
+    .request('DELETE /repos/{owner}/{repo}/contents/{path}', {
+      owner,
+      repo,
+      path,
+      sha,
+      message: '🤖 Delete stalebot config'
+    })
+    .then(
+      response => null,
+      error => null
+    )
 
   logger.info(`${repository.html_url} ${path} deleted`)
 }
