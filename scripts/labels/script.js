@@ -15,56 +15,63 @@ module.exports.script = async (octokit, repository) => {
   const owner = repository.owner.login
   const repo = repository.name
 
-  const {data} = await octokit
-    .request('GET /repos/{owner}/{repo}/labels', {
-      owner,
-      repo
-    })
+  const {data} = await octokit.request('GET /repos/{owner}/{repo}/labels', {
+    owner,
+    repo
+  })
 
-  for (const label of data) {
+  const deleteLabels = data.filter(have => {
+    return !SYNC_LABELS.some(want => {
+      return have.name === want.name
+    })
+  })
+
+  for (const label of deleteLabels) {
     const {name} = label
 
-    // Skip matching labels
-    if (SYNC_LABELS.find(({name: n}) => n === name)) continue
+    // https://docs.github.com/en/rest/reference/issues#delete-a-label
+    await octokit.request('DELETE /repos/{owner}/{repo}/labels/{name}', {owner, repo, name}).then(
+      response => {
+        logger.log({
+          level: 'debug',
+          message: `${owner}/${repo} label deleted`,
+          label: name,
+          url: repository.html_url
+        })
+      },
+      error => null
+    )
+  }
 
-    try {
-      // https://docs.github.com/en/rest/reference/issues#delete-a-label
-      await octokit.request('DELETE /repos/{owner}/{repo}/labels/{name}', {owner, repo, name}).then(
+  const createLabels = SYNC_LABELS.filter(want => {
+    return !data.some(have => {
+      return want.name === have.name
+    })
+  })
+
+  for (const label of createLabels) {
+    const {name, color, description} = label
+
+    // https://docs.github.com/en/rest/reference/issues#create-a-label
+    await octokit
+      .request('POST /repos/{owner}/{repo}/labels', {
+        owner,
+        repo,
+        name,
+        color,
+        description
+      })
+      .then(
         response => {
-          octokit.log.info(`${repository.html_url} label(${name}) deleted.`)
+          logger.log({
+            level: 'debug',
+            message: `${owner}/${repo} label created`,
+            label: name,
+            url: repository.html_url
+          })
         },
         error => null
       )
-    } catch (err) {
-      // do nothing, label already exists
-    }
-  }
-
-  for (const label of SYNC_LABELS) {
-    const {name, color, description} = label
-
-    // Skip matching labels
-    if (data.find(({name: n}) => n === name)) continue
-
-    try {
-      // https://docs.github.com/en/rest/reference/issues#create-a-label
-      await octokit
-        .request('POST /repos/{owner}/{repo}/labels', {
-          owner,
-          repo,
-          name,
-          color,
-          description
-        })
-        .then(
-          response => {
-            octokit.log.info(`${repository.html_url} label(${name}) created.`)
-          },
-          error => null
-        )
-    } catch (err) {
-      // do nothing, label already exists
-    }
   }
 
   logger.info(`${repository.html_url}/labels updated`)
