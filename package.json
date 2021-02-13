@@ -38,8 +38,8 @@
   "devDependencies": {
     "@github/prettier-config": "^0.0.4",
     "@octokit/core": "^3.2.5",
-    "@octokit/openapi-types": "^3.3.0",
-    "eslint": "^7.18.0",
+    "@octokit/openapi-types": "^4.0.3",
+    "eslint": "^7.20.0",
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-github": "^4.1.1"
   },

@@ -30,35 +30,21 @@ const {logger} = require('./scripts/helpers')
   })
 
   try {
-    // mark empty repos
-    console.time('mark empty repos')
-    await octoherd({
-      token,
-      script: resolve(process.env.PWD, 'scripts/mark-empty/script.js'),
-      repos,
-      cache: false
-    })
-    console.timeEnd('mark empty repos')
+    // add your scripts to run here...
 
-    // delete stalebot config
-    console.time('delete stalebot config')
-    await octoherd({
-      token,
-      script: resolve(process.env.PWD, 'scripts/delete-stalebot/script.js'),
-      repos,
-      cache: false
-    })
-    console.timeEnd('delete stalebot config')
+    /**
+     * example
+     *
+     * await octoherd({
+     *   token,
+     *   script: resolve(process.env.PWD, 'scripts/repo-settings/script.js'),
+     *   repos,
+     *   cache: false,
+     *   signature: true
+     * })
+     */
 
-    // sync labels
-    console.time('sync labels')
-    await octoherd({
-      token,
-      script: resolve(process.env.PWD, 'scripts/labels/script.js'),
-      repos,
-      cache: false
-    })
-    console.timeEnd('sync labels')
+     logger.info('done')
   } catch (err) {
     logger.error(err)
   }
