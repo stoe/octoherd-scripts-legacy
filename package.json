@@ -12,14 +12,7 @@
     "url": "https://github.com/stoe"
   },
   "license": "MIT",
-  "homepage": "https://github.com/stoe/octoherd-scripts#readme",
-  "repository": {
-    "type": "git",
-    "url": "ssh://git@github.com/stoe/octoherd-scripts.git"
-  },
-  "bugs": {
-    "url": "https://github.com/stoe/octoherd-scripts/issues"
-  },
+  "repository": "github:stoe/octoherd-scripts",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
